@@ -23,3 +23,4 @@
 `undangerCountThreshold` - макс кол-во безопасных сигналов
 `thirtySeconds` - сюда писать время работы таймеров для пина 1 и пина 2 в **милисекундах**
 
+![flow_gpaph](./img/flow_graph.png)
