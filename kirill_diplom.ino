@@ -1,4 +1,5 @@
-const int analogInputPin = A0;
+const int analogInputPin1 = A0;
+const int analogInputPin2 = A1;
 const int pin1 = 4; // Бдительность
 const int pin2 = 2; // Опасность
 const int pin3 = 3; // Запуск генератора
@@ -32,6 +33,7 @@ void setup()
 void loop()
 {
     float analogVoltage = getAnalogVoltage();
+    Serial.println(analogVoltage);
     if (analogVoltage >= minVoltage && analogVoltage <= maxVoltage)
     {
         if (digitalRead(pin1) == HIGH || digitalRead(pin2) == HIGH)
@@ -101,7 +103,8 @@ void loop()
 
 float getAnalogVoltage()
 {
-    int rawValue = analogRead(analogInputPin);
-    float voltage = rawValue * (5.0 / 1023.0);
+    int rawValue1 = analogRead(analogInputPin1);
+    int rawValue2 = analogRead(analogInputPin2);
+    float voltage = ((rawValue1 + rawValue2) / 2) * (5.0 / 1023.0);
     return voltage;
 }
