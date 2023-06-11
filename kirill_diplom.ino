@@ -10,14 +10,17 @@ const int attentionThreshold = 10;
 const int dangerBuffer = 5;
 const unsigned long undangerCountThreshold = 10000;
 const unsigned long thirtySeconds = 30000; // 30 секунд продолжительность работы таймера на A1 и A2  
+const unsigned long sixtySectonds = 60000; // 5 секунд продолжительность работы таймера на A1 и A2
 
 unsigned int undangerCount = 0;
 unsigned int attentionCount = 0;
 unsigned int dangerCount = 0;
 unsigned long timer1StartTime = 0;
 unsigned long timer2StartTime = 0;
+unsigned long timer3StartTime = 0;
 bool timer1Running = false;
 bool timer2Running = false;
+bool timer3Running = false;
 
 void setup()
 {
@@ -45,7 +48,7 @@ void loop()
     if (analogVoltage > maxVoltage && analogVoltage < dangerVoltage)
     {
         attentionCount++;
-
+        
         if (attentionCount == attentionThreshold && !timer1Running)
         {
             digitalWrite(pin3, LOW);
@@ -75,7 +78,7 @@ void loop()
 
     if (analogVoltage >= minVoltage && analogVoltage <= maxVoltage)
     {
-        if (digitalRead(pin1) == HIGH && digitalRead(pin2) == HIGH && undangerCount == undangerCountThreshold)
+        if (digitalRead(pin1) == HIGH && digitalRead(pin2) == HIGH && undangerCount == undangerCountThreshold || milis() - timer2StartTime >= thirtySeconds)
         {
             Serial.print('\n');
             undangerCount  = 0;
@@ -90,6 +93,7 @@ void loop()
         }
         if (timer1Running && millis() - timer1StartTime >= thirtySeconds && digitalRead(pin1) == HIGH && digitalRead(pin2) == LOW)
         {
+            digitalWrite(pin3, HIGH);
             digitalWrite(pin1, LOW);
             undangerCount = 0;
             attentionCount = 0;
@@ -98,6 +102,23 @@ void loop()
         }
     } else {
         undangerCount = 0;
+    }
+    if (attentionCount >= 1 && !timer3Running)
+    {
+        timer3StartTime = milis();
+        timer3Running = true;
+    }
+    if (milis() - timer3StartTime >= sixtySectonds)
+    {
+        undangerCount  = 0;
+        attentionCount = 0;
+        dangerCount    = 0;
+        timer1Running = false;
+        timer2Running = false;
+        timer3Running = false;
+        digitalWrite(pin1, LOW);
+        digitalWrite(pin2, LOW);
+        digitalWrite(pin3, HIGH);
     }
 }
 
