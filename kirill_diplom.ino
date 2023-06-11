@@ -105,10 +105,10 @@ void loop()
     }
     if (attentionCount >= 1 && !timer3Running)
     {
-        timer3StartTime = milis();
+        timer3StartTime = millis();
         timer3Running = true;
     }
-    if (milis() - timer3StartTime >= sixtySectonds)
+    if (millis() - timer3StartTime >= sixtySectonds)
     {
         undangerCount  = 0;
         attentionCount = 0;
